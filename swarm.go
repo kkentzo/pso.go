@@ -16,11 +16,11 @@ func Initialize(settings *Settings) Swarm {
 	// store settings
 	swarm.settings = settings
 	// initialize gbest array
-	swarm.gbest = make([]float64, settings.dim)
+	swarm.gbest = make([]float64, settings.Dim)
 	swarm.fitness = 1e20
 	// initialize particles
-	swarm.particles = make([]*Particle, settings.dim)
-	for i:=0; i<swarm.settings.dim; i++ {
+	swarm.particles = make([]*Particle, settings.Dim)
+	for i:=0; i<swarm.settings.Dim; i++ {
 		swarm.particles[i] = NewParticle(settings)
 		swarm.updateBest(swarm.particles[i])
 	}
@@ -30,7 +30,7 @@ func Initialize(settings *Settings) Swarm {
 func (swarm *Swarm) updateBest(particle *Particle) {
 	if particle.best < swarm.fitness {
 		swarm.fitness = particle.best
-		for i:=0; i<swarm.settings.dim; i++ {
+		for i:=0; i<swarm.settings.Dim; i++ {
 			swarm.gbest[i] = particle.pbest[i]
 		}
 	}

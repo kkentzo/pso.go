@@ -1,9 +1,5 @@
 package pso
 
-import (
-	//"fmt"
-)
-
 type Particle struct {
 	position []float64
 	velocity []float64
@@ -16,11 +12,11 @@ type Particle struct {
 func NewParticle(settings *Settings) *Particle {
 	particle := new(Particle)
 	particle.settings = settings
-	particle.position = make([]float64, settings.dim)
-	particle.pbest = make([]float64, settings.dim)
-	particle.velocity = make([]float64, settings.dim)
+	particle.position = make([]float64, settings.Dim)
+	particle.pbest = make([]float64, settings.Dim)
+	particle.velocity = make([]float64, settings.Dim)
 
-	for i:=0; i<settings.dim; i++ {
+	for i:=0; i<settings.Dim; i++ {
 		//fmt.Printf("%.2f %.2f\n", settings.rng.Float64(), settings.rng.Float64())
 		a := settings.x_lo + (settings.x_hi - settings.x_lo) * settings.rng.Float64()
 		b := settings.x_lo + (settings.x_hi - settings.x_lo) * settings.rng.Float64()
@@ -38,7 +34,7 @@ func NewParticle(settings *Settings) *Particle {
 
 func (particle *Particle) Update(gbest []float64) {
 	settings := particle.settings
-	for i:=0; i<settings.dim; i++ {
+	for i:=0; i<settings.Dim; i++ {
 		// calculate stochastic coefficients
 		rho1 := settings.c1 * settings.rng.Float64()
 		rho2 := settings.c2 * settings.rng.Float64()
@@ -49,18 +45,14 @@ func (particle *Particle) Update(gbest []float64) {
 		    rho2 * (gbest[i] - particle.position[i])
 		// update position
 		particle.position[i] += particle.velocity[i];
-		//fmt.Printf("%.2f ", particle.position[i])
-
 	}
-	//fmt.Printf("\n")
 
 	// update particle fitness
 	particle.fitness = settings.ObjectiveFunction(particle.position)
-	//fmt.Printf("New best : %.4f\n", particle.fitness)
 	// update personal best position?
 	if particle.fitness < particle.best {
 		particle.best = particle.fitness
-		for i:=0; i<settings.dim; i++ {
+		for i:=0; i<settings.Dim; i++ {
 			particle.pbest[i] = particle.position[i]
 		}
 	}

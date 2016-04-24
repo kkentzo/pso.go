@@ -9,7 +9,8 @@ const pso_max_size int = 100
 const pso_inertia float64 = 0.7298 // default value of w (see clerc02)
 
 type Settings struct {
-    dim int // problem dimensionality
+	ObjectiveFunction func(vec []float64)float64 // the objective function
+    Dim int // problem dimensionality
     x_lo float64 // lower range limit
     x_hi float64 // higher range limit
     goal float64 // optimization goal (error threshold)
@@ -28,18 +29,18 @@ type Settings struct {
 	// or apply periodic boundary conditions (FALSE)
 
 	rng *rand.Rand // the random number generator
-
-	ObjectiveFunction func(vec []float64)float64 // the objective function
 }
 
 func DefaultSettings() *Settings {
 	settings := new(Settings)
 
-	settings.dim = 30
+	settings.ObjectiveFunction = Sphere
+	settings.Dim = 30
+
 	settings.x_lo =  -20
 	settings.x_hi =  20
 	settings.goal = 1e-5;
-    settings.size = CalculateSwarmSize(settings.dim, pso_max_size);
+    settings.size = CalculateSwarmSize(settings.Dim, pso_max_size);
     settings.print_every = 1000;
     settings.steps = 100000;
     settings.c1 = 1.496;
@@ -52,8 +53,6 @@ func DefaultSettings() *Settings {
 
 	// initialize the RNG
 	settings.rng = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	settings.ObjectiveFunction = Sphere
 
 	return settings
 }

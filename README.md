@@ -44,5 +44,6 @@ func main() {
 
 - Implement linearly decreasing inertia weight
 - Implement neighborhood information strategies
+- Investigate particle parallelism using goroutines
 - Implement specific settings for objective functions
 - Add tests!
