@@ -5,9 +5,9 @@ import (
 )
 
 type Swarm struct {
-	settings *Settings
-	gbest[] float64
-	fitness float64
+	settings  *Settings
+	gbest     []float64
+	fitness   float64
 	particles []*Particle
 }
 
@@ -20,7 +20,7 @@ func Initialize(settings *Settings) Swarm {
 	swarm.fitness = 1e20
 	// initialize particles
 	swarm.particles = make([]*Particle, settings.Dim)
-	for i:=0; i<swarm.settings.Dim; i++ {
+	for i := 0; i < swarm.settings.Dim; i++ {
 		swarm.particles[i] = NewParticle(settings)
 		swarm.updateBest(swarm.particles[i])
 	}
@@ -30,7 +30,7 @@ func Initialize(settings *Settings) Swarm {
 func (swarm *Swarm) updateBest(particle *Particle) {
 	if particle.best < swarm.fitness {
 		swarm.fitness = particle.best
-		for i:=0; i<swarm.settings.Dim; i++ {
+		for i := 0; i < swarm.settings.Dim; i++ {
 			swarm.gbest[i] = particle.pbest[i]
 		}
 	}
@@ -38,8 +38,8 @@ func (swarm *Swarm) updateBest(particle *Particle) {
 
 func (swarm *Swarm) Run() {
 	// the algorithm goes here
-	for step:=0; step<swarm.settings.steps; step++ {
-		for _, particle := range(swarm.particles) {
+	for step := 0; step < swarm.settings.steps; step++ {
+		for _, particle := range swarm.particles {
 			particle.Update(swarm.gbest)
 			swarm.updateBest(particle)
 			//fmt.Printf("f = %.5f\n", particle.fitness)
@@ -48,7 +48,7 @@ func (swarm *Swarm) Run() {
 				return
 			}
 		}
-		if step % swarm.settings.print_every == 0 {
+		if step%swarm.settings.print_every == 0 {
 			fmt.Printf("Step %d :: min err=%.5e\n", step, swarm.fitness)
 		}
 	}
