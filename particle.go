@@ -30,7 +30,7 @@ func NewParticle(settings *Settings) *Particle {
 		particle.velocity[i] = (a - b) / 2.0
 	}
 
-	particle.fitness = settings.Obj_fun(particle.position)
+	particle.fitness = settings.ObjectiveFunction(particle.position)
 	particle.best = particle.fitness
 
 	return particle
@@ -55,7 +55,7 @@ func (particle *Particle) Update(gbest []float64) {
 	//fmt.Printf("\n")
 
 	// update particle fitness
-	particle.fitness = settings.Obj_fun(particle.position)
+	particle.fitness = settings.ObjectiveFunction(particle.position)
 	//fmt.Printf("New best : %.4f\n", particle.fitness)
 	// update personal best position?
 	if particle.fitness < particle.best {

@@ -29,7 +29,7 @@ type Settings struct {
 
 	rng *rand.Rand // the random number generator
 
-	Obj_fun func(vec []float64)float64 // the objective function
+	ObjectiveFunction func(vec []float64)float64 // the objective function
 }
 
 func DefaultSettings() *Settings {
@@ -53,7 +53,7 @@ func DefaultSettings() *Settings {
 	// initialize the RNG
 	settings.rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	settings.Obj_fun = Sphere
+	settings.ObjectiveFunction = Sphere
 
 	return settings
 }
