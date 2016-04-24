@@ -17,22 +17,25 @@ for the purpose of learning Go :-)
 
 ## Usage
 
+Install using:
+
+```
+go get github.com/kkentzo/pso.go
+```
+
 The library can be used as shown in the following code snippet:
 
 ```go
 package main
 
 import (
-    "fmt"
-    "kk/pso"
+    "github.com/kkentzo/pso.go"
 )
 
 func main() {
     settings := pso.DefaultSettings()
     settings.Obj_fun = pso.Rosenbrock
-    fmt.Println(settings)
     swarm := pso.Initialize(settings)
-    fmt.Println(swarm)
     swarm.Run()
 }
 ```
