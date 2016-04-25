@@ -42,7 +42,6 @@ func (swarm *Swarm) Run() {
 		for _, particle := range swarm.particles {
 			particle.Update(swarm.gbest)
 			swarm.updateBest(particle)
-			//fmt.Printf("f = %.5f\n", particle.fitness)
 			if swarm.fitness < swarm.settings.Function.goal {
 				fmt.Printf("Goal was reached @ step %d (fitness=%.2e) :-)",
 					step, swarm.fitness)
