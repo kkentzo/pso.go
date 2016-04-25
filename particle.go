@@ -6,27 +6,29 @@ type Particle struct {
 	pbest    []float64
 	fitness  float64
 	best     float64
-	settings *Settings
+	settings *SwarmSettings
 }
 
-func NewParticle(settings *Settings) *Particle {
+func NewParticle(settings *SwarmSettings) *Particle {
 	particle := new(Particle)
 	particle.settings = settings
-	particle.position = make([]float64, settings.Dim)
-	particle.pbest = make([]float64, settings.Dim)
-	particle.velocity = make([]float64, settings.Dim)
+	particle.position = make([]float64, settings.Function.dim)
+	particle.pbest = make([]float64, settings.Function.dim)
+	particle.velocity = make([]float64, settings.Function.dim)
 
-	for i := 0; i < settings.Dim; i++ {
-		//fmt.Printf("%.2f %.2f\n", settings.rng.Float64(), settings.rng.Float64())
-		a := settings.x_lo + (settings.x_hi-settings.x_lo)*settings.rng.Float64()
-		b := settings.x_lo + (settings.x_hi-settings.x_lo)*settings.rng.Float64()
+	x_lo := settings.Function.x_lo
+	x_hi := settings.Function.x_hi
+
+	for i := 0; i < settings.Function.dim; i++ {
+		a := x_lo + (x_hi-x_lo)*settings.rng.Float64()
+		b := x_lo + (x_hi-x_lo)*settings.rng.Float64()
 
 		particle.position[i] = a
 		particle.pbest[i] = a
 		particle.velocity[i] = (a - b) / 2.0
 	}
 
-	particle.fitness = settings.ObjectiveFunction(particle.position)
+	particle.fitness = settings.Function.Evaluate(particle.position)
 	particle.best = particle.fitness
 
 	return particle
@@ -34,13 +36,13 @@ func NewParticle(settings *Settings) *Particle {
 
 func (particle *Particle) Update(gbest []float64) {
 	settings := particle.settings
-	for i := 0; i < settings.Dim; i++ {
+	for i := 0; i < settings.Function.dim; i++ {
 		// calculate stochastic coefficients
-		rho1 := settings.c1 * settings.rng.Float64()
-		rho2 := settings.c2 * settings.rng.Float64()
+		rho1 := settings.C1 * settings.rng.Float64()
+		rho2 := settings.C2 * settings.rng.Float64()
 		// update velocity
 		particle.velocity[i] =
-			settings.w*particle.velocity[i] +
+			settings.inertia*particle.velocity[i] +
 				rho1*(particle.pbest[i]-particle.position[i]) +
 				rho2*(gbest[i]-particle.position[i])
 		// update position
@@ -48,11 +50,11 @@ func (particle *Particle) Update(gbest []float64) {
 	}
 
 	// update particle fitness
-	particle.fitness = settings.ObjectiveFunction(particle.position)
+	particle.fitness = settings.Function.Evaluate(particle.position)
 	// update personal best position?
 	if particle.fitness < particle.best {
 		particle.best = particle.fitness
-		for i := 0; i < settings.Dim; i++ {
+		for i := 0; i < settings.Function.dim; i++ {
 			particle.pbest[i] = particle.position[i]
 		}
 	}

@@ -2,7 +2,38 @@ package pso
 
 import "math"
 
-func Sphere(vec []float64) float64 {
+type ObjectiveFunction struct {
+	dim      int                         // problem dimensionality
+	x_lo     float64                     // lower range limit
+	x_hi     float64                     // higher range limit
+	goal     float64                     // optimization goal (error threshold)
+	Evaluate func(vec []float64) float64 // the objective function
+}
+
+var Sphere = ObjectiveFunction{
+	dim:      30,
+	x_lo:     -100,
+	x_hi:     100,
+	goal:     1e-5,
+	Evaluate: EvalSphere,
+}
+
+var Rosenbrock = ObjectiveFunction{
+	dim:      30,
+	x_lo:     -2.048,
+	x_hi:     2.048,
+	goal:     1e-5,
+	Evaluate: EvalRosenbrock,
+}
+var Griewank = ObjectiveFunction{
+	dim:      30,
+	x_lo:     -600,
+	x_hi:     600,
+	goal:     1e-5,
+	Evaluate: EvalGriewank,
+}
+
+func EvalSphere(vec []float64) float64 {
 	var sum float64 = 0
 	for i := 0; i < len(vec); i++ {
 		sum += math.Pow(vec[i], 2.0)
@@ -10,7 +41,7 @@ func Sphere(vec []float64) float64 {
 	return sum
 }
 
-func Rosenbrock(vec []float64) float64 {
+func EvalRosenbrock(vec []float64) float64 {
 	var sum float64 = 0
 	for i := 0; i < len(vec)-1; i++ {
 		sum += 100.0*
@@ -20,7 +51,7 @@ func Rosenbrock(vec []float64) float64 {
 	return sum
 }
 
-func Griewank(vec []float64) float64 {
+func EvalGriewank(vec []float64) float64 {
 	var sum float64 = 0
 	var prod float64 = 1
 
