@@ -34,7 +34,7 @@ import (
 
 func main() {
     settings := pso.DefaultSettings()
-    settings.ObjectiveFunction = pso.Rosenbrock
+    settings.Function = pso.Rosenbrock
     swarm := pso.Initialize(settings)
     swarm.Run()
 }
