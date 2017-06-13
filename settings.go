@@ -40,7 +40,7 @@ func DefaultSettings() *SwarmSettings {
 	settings.Function = Sphere
 
 	settings.Size = CalculateSwarmSize(settings.Function.dim, pso_max_size)
-	settings.PrintEvery = 1000
+	settings.PrintEvery = 100
 	settings.Steps = 100000
 	settings.C1 = 1.496
 	settings.C2 = 1.496

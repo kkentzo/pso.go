@@ -4,54 +4,60 @@ import (
 	"fmt"
 )
 
+type Result struct {
+	Position
+	Step int
+}
+
 type Swarm struct {
+	Gbest     *Position
 	settings  *SwarmSettings
-	gbest     []float64
-	fitness   float64
 	particles []*Particle
 }
 
-func Initialize(settings *SwarmSettings) Swarm {
+func NewSwarm(settings *SwarmSettings) *Swarm {
 	var swarm Swarm
 	// store settings
 	swarm.settings = settings
-	// initialize gbest array
-	swarm.gbest = make([]float64, settings.Function.dim)
-	swarm.fitness = 1e20
+	// initialize gbest
+	swarm.Gbest = NewPosition(settings)
+	swarm.Gbest.Fitness = 1e20
 	// initialize particles
 	swarm.particles = make([]*Particle, settings.Function.dim)
 	for i := 0; i < swarm.settings.Function.dim; i++ {
 		swarm.particles[i] = NewParticle(settings)
 		swarm.updateBest(swarm.particles[i])
 	}
-	return swarm
+	return &swarm
 }
 
 func (swarm *Swarm) updateBest(particle *Particle) {
-	if particle.best < swarm.fitness {
-		swarm.fitness = particle.best
-		for i := 0; i < swarm.settings.Function.dim; i++ {
-			swarm.gbest[i] = particle.pbest[i]
-		}
+	if particle.pbest.IsBetterThan(swarm.Gbest) {
+		swarm.Gbest = particle.pbest.Copy()
 	}
 }
 
-func (swarm *Swarm) Run() {
+func (swarm *Swarm) Run() Result {
 	// the algorithm goes here
-	for step := 0; step < swarm.settings.Steps; step++ {
+	var step int
+	for step = 0; step < swarm.settings.Steps; step++ {
 		for _, particle := range swarm.particles {
-			particle.Update(swarm.gbest)
+			particle.Update(swarm.Gbest)
 			swarm.updateBest(particle)
-			if swarm.fitness < swarm.settings.Function.goal {
-				fmt.Printf("Goal was reached @ step %d (fitness=%.2e) :-)",
-					step, swarm.fitness)
-				return
+			if swarm.Gbest.Fitness < swarm.settings.Function.Goal {
+				return Result{
+					Position: *swarm.Gbest,
+					Step:     step,
+				}
 			}
 		}
 		if step%swarm.settings.PrintEvery == 0 {
-			fmt.Printf("Step %d :: min err=%.5e\n", step, swarm.fitness)
+			fmt.Printf("Step %d :: min err=%.5e\n", step, swarm.Gbest.Fitness)
 		}
 	}
-	fmt.Printf("Finished; Goal was not reached (fitness=%.2e) :-(", swarm.fitness)
+	return Result{
+		Position: *swarm.Gbest,
+		Step:     step,
+	}
 
 }
