@@ -23,31 +23,7 @@ Install using:
 go get github.com/kkentzo/pso.go
 ```
 
-The library can be used as shown in the following code snippet:
-
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/kkentzo/pso.go"
-)
-
-func main() {
-	settings := pso.DefaultSettings()
-	settings.Function = pso.Griewank
-	swarm := pso.NewSwarm(settings)
-	result := swarm.Run()
-	if result.Position.Fitness < settings.Function.Goal {
-		fmt.Printf("Yay! Goal was reached @ step %d (fitness=%.2e) :-)",
-			result.Step, result.Position.Fitness)
-	} else {
-		fmt.Printf("Goal was not reached after %d steps (fitness=%.2e) :-)",
-			result.Step, result.Position.Fitness)
-
-	}
-}
-```
+For a usage example check out [the included command-line program](example/main.go)
 
 ## TODO
 
